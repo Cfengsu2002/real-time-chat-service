@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: relay-chat
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/relay}
+    username: ${DATABASE_USERNAME:relay}
+    password: ${DATABASE_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+      group:
+        readiness:
+          include: readinessState,db,redis
+app:
+  jwt:
+    secret: ${JWT_SECRET:}
+    ttl-seconds: ${JWT_TTL_SECONDS:86400}

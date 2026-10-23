@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-config
+  namespace: realtime-chat
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/chat
+  SPRING_DATASOURCE_USERNAME: chat
+  SPRING_DATA_REDIS_HOST: redis
+  SPRING_DATA_REDIS_PORT: "6379"

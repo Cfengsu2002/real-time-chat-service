@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:relay;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password: ""
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+management:
+  endpoint:
+    health:
+      group:
+        readiness:
+          include: readinessState,db
+  health:
+    redis:
+      enabled: false

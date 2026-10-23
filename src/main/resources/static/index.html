@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#162b2b" />
+    <meta
+      name="description"
+      content="Relay Chat，让对话即刻发生。一个支持实时消息、公共房间与消息历史的轻量聊天空间。"
+    />
+    <title>Relay Chat · 让对话即刻发生</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/app.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <svg
+      class="icon-defs"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="icon-send" viewBox="0 0 24 24">
+        <path d="m21 3-7 18-4-7-7-4L21 3ZM10 14l5-5" />
+      </symbol>
+      <symbol id="icon-exit" viewBox="0 0 24 24">
+        <path d="M10 5H5v14h5m5-14 7 7-7 7m-7-7h14" />
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M6 18 18 6" />
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16" />
+      </symbol>
+      <symbol id="icon-chat" viewBox="0 0 24 24">
+        <path
+          d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5a9.5 9.5 0 0 1 19 0Z"
+        />
+        <path d="M7 11h10M7 15h6" />
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+        <path d="m8 12 3 3 5-6" />
+      </symbol>
+    </svg>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="工作空间导航">
+        <a class="brand" href="/" aria-label="Relay Chat 首页"
+          ><span class="brand-mark" aria-hidden="true">r<span>↗</span></span
+          ><span
+            >relay<span class="brand-dot">.</span
+            ><small>CHAT WORKSPACE</small></span
+          ></a
+        >
+        <button
+          class="icon-button sidebar-close"
+          id="close-sidebar"
+          type="button"
+          aria-label="关闭导航"
+          ><svg class="icon"><use href="#icon-close" /></svg
+        ></button>
+
+        <div class="workspace-label"
+          ><span class="workspace-symbol">R</span
+          ><div>公共工作空间<small>给每段对话一个空间</small></div
+          ><span class="workspace-chevron" aria-hidden="true">⌄</span></div
+        >
+        <div class="channel-heading"
+          ><h2>对话房间</h2
+          ><button
+            class="icon-button"
+            id="new-room"
+            type="button"
+            aria-label="创建公共房间"
+            disabled
+            ><svg class="icon"><use href="#icon-plus" /></svg></button
+        ></div>
+        <nav class="room-list" id="room-list" aria-label="公共房间列表"
+          ><div class="sidebar-placeholder">登录后，加入一段对话。</div></nav
+        >
+        <div class="sidebar-note"
+          ><span class="note-spark" aria-hidden="true">✳</span
+          ><p>好的想法，<br />从一句「你好」开始。</p
+          ><span>CONNECTED BY CONVERSATION</span></div
+        >
+        <div class="account" id="account"
+          ><div
+            class="avatar account-avatar"
+            id="account-avatar"
+            aria-hidden="true"
+            >R</div
+          ><div class="account-info"
+            ><strong id="account-name">欢迎来到 Relay</strong
+            ><small id="account-detail">你的下一段对话，在这里。</small></div
+          ><button
+            class="icon-button"
+            id="logout"
+            type="button"
+            aria-label="退出登录"
+            hidden
+            ><svg class="icon"><use href="#icon-exit" /></svg></button
+        ></div>
+      </aside>
+      <button
+        class="sidebar-overlay"
+        id="sidebar-overlay"
+        type="button"
+        aria-label="关闭导航"
+        hidden
+      ></button>
+
+      <main class="main">
+        <header class="topbar"
+          ><div class="topbar-left"
+            ><button
+              class="icon-button menu-button"
+              id="open-sidebar"
+              type="button"
+              aria-label="打开房间导航"
+              aria-expanded="false"
+              aria-controls="sidebar"
+              ><svg class="icon"><use href="#icon-menu" /></svg></button
+            ><div class="breadcrumb"
+              ><span>工作空间</span><span aria-hidden="true">/</span
+              ><strong id="breadcrumb-room">欢迎</strong></div
+            ></div
+          ><span class="connection-status" id="connection-status" role="status"
+            ><span class="status-dot"></span
+            ><span id="connection-label">等待连接</span></span
+          ></header
+        >
+
+        <section
+          class="welcome-view"
+          id="welcome-view"
+          aria-labelledby="welcome-title"
+        >
+          <div class="welcome-intro"
+            ><div class="eyebrow"
+              ><span></span> A LITTLE CLOSER, IN REAL TIME</div
+            ><h1 id="welcome-title"
+              >让对话，<br />即刻<span class="accent-word">发生。</span></h1
+            ><p class="welcome-copy"
+              >一个轻盈、专注的聊天空间。<br />分享灵感，连接彼此，让每个想法都有回应。</p
+            ><div class="intro-features"
+              ><div
+                ><svg class="icon"><use href="#icon-chat" /></svg
+                ><span>实时对话<small>消息即刻送达</small></span></div
+              ><div
+                ><svg class="icon"><use href="#icon-shield" /></svg
+                ><span>安心连接<small>登录后开启交流</small></span></div
+              ></div
+            ><div class="intro-art" aria-hidden="true"
+              ><div class="art-orbit orbit-one"></div
+              ><div class="art-orbit orbit-two"></div
+              ><div class="art-circle"
+                ><span>hello<span class="art-dot">.</span></span
+                ><i></i></div
+              ><span class="art-star star-one">✳</span
+              ><span class="art-star star-two">✦</span
+              ><div class="art-label">GOOD CONVERSATIONS START HERE</div></div
+            ></div
+          >
+          <div class="auth-card"
+            ><div class="auth-card-heading"
+              ><span class="card-kicker">YOUR SPACE TO CONNECT</span
+              ><h2 id="auth-title">欢迎回来</h2
+              ><p id="auth-subtitle">登录账号，接着聊聊。</p></div
+            ><div class="auth-tabs" role="tablist" aria-label="账号操作"
+              ><button
+                id="login-tab"
+                class="active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="auth-form"
+                >登录</button
+              ><button
+                id="register-tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="auth-form"
+                tabindex="-1"
+                >创建账号</button
+              ></div
+            ><form id="auth-form" role="tabpanel" aria-labelledby="login-tab"
+              ><label for="username">用户名</label
+              ><input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                minlength="3"
+                maxlength="24"
+                pattern="[A-Za-z0-9_]+"
+                placeholder="你的用户名"
+                required
+                aria-describedby="username-hint"
+              /><small class="field-hint" id="username-hint"
+                >3–24 位字母、数字或下划线，不区分大小写</small
+              ><label for="password">密码</label
+              ><div class="password-field"
+                ><input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  minlength="8"
+                  maxlength="72"
+                  placeholder="至少 8 位字符"
+                  required
+                  aria-describedby="password-hint"
+                /><button
+                  id="toggle-password"
+                  type="button"
+                  aria-label="显示密码"
+                  aria-pressed="false"
+                  >显示</button
+                ></div
+              ><small class="password-hint" id="password-hint"
+                >最长 72 字节；中文等字符会占用多个字节。</small
+              ><p class="form-error" id="auth-error" role="alert" hidden></p
+              ><button
+                class="primary-button auth-submit"
+                id="auth-submit"
+                type="submit"
+                ><span>登录工作空间</span
+                ><svg class="icon"><use href="#icon-arrow" /></svg></button
+              ><p class="auth-footnote"
+                >无需邮箱，一个名字就能开始。<br />公共房间中的消息对所有登录用户可见。</p
+              ></form
+            ></div
+          >
+          <footer class="welcome-footer"
+            ><span>RELAY CHAT</span><span>少一点距离，多一点交流。</span
+            ><span>MADE FOR THE MOMENT ↗</span></footer
+          >
+        </section>
+
+        <section class="chat-view" id="chat-view" aria-label="聊天空间" hidden>
+          <div class="room-header"
+            ><div class="room-header-icon" aria-hidden="true">#</div
+            ><div
+              ><h1 id="room-title">选择一个房间</h1
+              ><p id="room-description">加入公共房间，开启新的对话。</p></div
+            ><span class="public-badge">公共房间</span></div
+          >
+          <div class="chat-banner" id="chat-banner" role="status" hidden></div>
+          <div
+            class="message-scroll"
+            id="message-scroll"
+            tabindex="0"
+            aria-label="聊天消息"
+            ><div class="history-control"
+              ><button class="text-button" id="load-more" type="button" hidden
+                >加载更早的消息</button
+              ></div
+            ><div
+              id="message-list"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions text"
+              aria-label="消息记录"
+            ></div
+            ><div class="chat-empty" id="chat-empty"
+              ><div class="empty-illustration" aria-hidden="true"
+                ><svg class="icon"><use href="#icon-chat" /></svg
+                ><span>✦</span></div
+              ><span class="card-kicker">A NEW CONVERSATION</span
+              ><h2 id="empty-title">这里，等你开口。</h2
+              ><p id="empty-description"
+                >从左侧选择一个房间，<br />或者创建一个属于新想法的空间。</p
+              ><button
+                class="secondary-button"
+                id="empty-create-room"
+                type="button"
+                ><svg class="icon"><use href="#icon-plus" /></svg
+                >创建公共房间</button
+              ><button
+                class="secondary-button"
+                id="retry-history"
+                type="button"
+                hidden
+                >重新加载消息</button
+              ></div
+            ></div
+          >
+          <div class="composer-area"
+            ><div class="new-messages-wrap"
+              ><button
+                class="new-messages"
+                id="new-messages"
+                type="button"
+                hidden
+                >有新消息 ↓</button
+              ></div
+            ><form class="composer" id="message-form"
+              ><label class="sr-only" for="message-input">消息内容</label
+              ><textarea
+                id="message-input"
+                rows="1"
+                maxlength="2000"
+                placeholder="选择一个房间，开始聊天…"
+                disabled
+                aria-describedby="composer-hint"
+              ></textarea
+              ><button
+                class="send-button"
+                id="send-message"
+                type="submit"
+                aria-label="发送消息"
+                disabled
+                ><svg class="icon">
+                  <use href="#icon-send" /></svg></button></form
+            ><div class="composer-footer"
+              ><span id="composer-hint"
+                ><kbd>Enter</kbd> 发送 · <kbd>Shift + Enter</kbd> 换行</span
+              ><span id="character-count">0 / 2000</span></div
+            ></div
+          >
+        </section>
+      </main>
+    </div>
+
+    <dialog class="room-dialog" id="room-dialog" aria-labelledby="dialog-title"
+      ><div class="dialog-heading"
+        ><span class="card-kicker">MAKE ROOM FOR SOMETHING NEW</span
+        ><button
+          class="icon-button"
+          id="close-dialog"
+          type="button"
+          aria-label="关闭创建房间"
+          ><svg class="icon"><use href="#icon-close" /></svg></button></div
+      ><h2 id="dialog-title">新对话，新空间。</h2
+      ><p>创建公共房间，邀请想法在这里碰面。</p
+      ><form id="room-form"
+        ><label for="room-name">房间名称</label
+        ><input
+          id="room-name"
+          name="name"
+          minlength="3"
+          maxlength="48"
+          pattern="[a-z0-9-]+"
+          placeholder="例如：creative-corner"
+          required
+          aria-describedby="room-name-hint" /><small
+          class="field-hint"
+          id="room-name-hint"
+          >3–48 位小写英文字母、数字或短横线</small
+        ><label for="room-description-input"
+          >房间介绍 <span class="optional">选填</span></label
+        ><textarea
+          id="room-description-input"
+          name="description"
+          maxlength="160"
+          rows="3"
+          placeholder="告诉大家，这里可以聊些什么。"
+        ></textarea
+        ><div class="dialog-info"
+          ><svg class="icon"><use href="#icon-shield" /></svg
+          ><span>这是一个公共房间，所有登录用户均可查看和参与。</span></div
+        ><p class="form-error" id="room-error" role="alert" hidden></p
+        ><button class="primary-button" id="create-room-submit" type="submit"
+          ><span>创建房间</span
+          ><svg class="icon"><use href="#icon-arrow" /></svg></button></form
+    ></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </body>
+</html>

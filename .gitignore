@@ -1,0 +1,15 @@
+target/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.iml
+*.log
+.DS_Store
+deploy/k8s/secret.yaml
+artifacts/
+.local/
+__pycache__/
+*.py[cod]
+.venv/

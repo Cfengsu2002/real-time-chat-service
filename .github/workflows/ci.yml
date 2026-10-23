@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: 测试与校验
+        run: ./mvnw -B verify
+      - name: 构建容器镜像
+        run: docker build --tag realtime-chat:local .
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 安装端到端测试依赖
+        run: pip install -r tests/requirements.txt
+      - name: 初始化本地密钥
+        run: ./scripts/init-env.sh
+      - name: 启动 PostgreSQL、Redis 和双应用实例
+        run: docker compose -f compose.yaml -f tests/compose.integration.yaml up -d --wait --wait-timeout 180
+      - name: 验证跨实例消息与持久化
+        env:
+          CHAT_BASE_A: http://localhost:8080
+          CHAT_BASE_B: http://localhost:8081
+        run: python tests/e2e_smoke.py
+      - name: 输出故障日志
+        if: failure()
+        run: docker compose -f compose.yaml -f tests/compose.integration.yaml logs --tail 150
+      - name: 清理测试容器与数据
+        if: always()
+        run: docker compose -f compose.yaml -f tests/compose.integration.yaml down -v
