@@ -9,10 +9,10 @@ permissions:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '17'
@@ -21,7 +21,7 @@ jobs:
         run: ./mvnw -B verify
       - name: 构建容器镜像
         run: docker build --tag realtime-chat:local .
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.12'
       - name: 安装端到端测试依赖
