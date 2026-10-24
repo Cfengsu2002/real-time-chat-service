@@ -13,7 +13,7 @@
     <artifactId>relay-chat</artifactId>
     <version>0.1.0</version>
     <name>Relay Chat</name>
-    <description>Day 1 foundation: authentication and public rooms</description>
+    <description>Real-time public rooms with persistent messages</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -21,6 +21,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

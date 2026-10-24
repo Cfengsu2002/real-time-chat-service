@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#19332e" />
     <meta
       name="description"
-      content="Relay is a simple workspace for creating public rooms and bringing your ideas together."
+      content="Relay brings public rooms, real-time conversations, and shared ideas into one workspace."
     />
     <title>Relay · Make room for your ideas</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -56,7 +56,7 @@
           <span class="brand-mark" aria-hidden="true">r<span>↗</span></span>
           <span
             >relay<span class="brand-dot">.</span
-            ><small>ROOM WORKSPACE</small></span
+            ><small>CHAT WORKSPACE</small></span
           >
         </a>
         <button
@@ -169,8 +169,8 @@
               Make room <br />for your <span>ideas.</span>
             </h1>
             <p class="welcome-copy">
-              A simple place to bring things together. <br />Find a room, set
-              the context, and make it yours.
+              A simple place to bring things together. <br />Find a room, start
+              a conversation, and make it yours.
             </p>
             <div class="intro-features">
               <div>
@@ -185,7 +185,7 @@
                 <svg class="icon"><use href="#icon-globe" /></svg
                 ><span
                   >A shared starting point<small
-                    >One workspace, open to every member.</small
+                    >Messages that bring everyone together.</small
                   ></span
                 >
               </div>
@@ -295,8 +295,8 @@
           <div class="workspace-heading">
             <div>
               <span class="eyebrow">A PLACE FOR YOUR NEXT IDEA</span>
-              <h1>Your room to begin.</h1>
-              <p>Explore the workspace or create a space of your own.</p>
+              <h1>A little room to talk.</h1>
+              <p>Find your conversation or start a new one.</p>
             </div>
             <span class="room-count" id="room-count">0 rooms</span>
           </div>
@@ -330,42 +330,42 @@
             </button>
           </div>
 
-          <article
-            class="room-detail"
-            id="room-detail"
-            aria-labelledby="room-title"
-            hidden
-          >
-            <div class="room-detail-top">
-              <div class="room-detail-icon" aria-hidden="true">#</div>
-              <span class="public-badge"
-                ><svg class="icon"><use href="#icon-globe" /></svg>Public
-                room</span
-              >
-            </div>
-            <span class="card-kicker">YOU'RE IN THE RIGHT PLACE</span>
-            <h2 id="room-title"></h2>
-            <p class="room-description" id="room-description"></p>
-            <div class="room-details-grid">
-              <div>
-                <span class="detail-label">ROOM NAME</span
-                ><strong id="room-name-value"></strong>
+          <article class="room-detail chat-room" id="room-detail" aria-labelledby="room-title" hidden>
+            <header class="chat-heading">
+              <div class="chat-room-identity">
+                <div class="room-detail-icon" aria-hidden="true">#</div>
+                <div class="chat-heading-copy">
+                  <h2 id="room-title"></h2>
+                  <p class="room-description" id="room-description"></p>
+                </div>
               </div>
-              <div>
-                <span class="detail-label">CREATED</span
-                ><time id="room-created"></time>
+              <div class="chat-status-group">
+                <span class="public-badge"><svg class="icon"><use href="#icon-globe" /></svg>Public room</span>
+                <span class="connection-status" id="connection-status" role="status" aria-live="polite" data-state="connecting">Connecting…</span>
               </div>
-              <div>
-                <span class="detail-label">VISIBILITY</span
-                ><strong>All workspace members</strong>
+            </header>
+            <div class="chat-history" id="chat-history" tabindex="0" aria-label="Conversation history">
+              <div class="history-toolbar">
+                <button class="text-button" id="load-older" type="button" hidden>Load older messages</button>
+                <span id="history-state" role="status">Loading messages…</span>
               </div>
+              <div class="history-error" id="history-error" role="alert" hidden>
+                <span id="history-error-text"></span>
+                <button class="text-button" id="retry-history" type="button">Try again</button>
+              </div>
+              <ol class="message-list" id="message-list" aria-label="Messages"></ol>
+              <p class="conversation-empty" id="conversation-empty" hidden>Every good conversation starts somewhere.<br />Say hello to the room.</p>
             </div>
-            <div class="room-note">
-              <span aria-hidden="true">✳</span>
-              <p>
-                A clear name. A little context.<br />A shared place to start.
-              </p>
-            </div>
+            <form class="message-composer" id="message-form">
+              <label for="message-input" id="message-label">Your message</label>
+              <textarea id="message-input" name="content" rows="2" maxlength="2000" placeholder="A thought, a question, a little hello…" aria-describedby="composer-hint message-error" required></textarea>
+              <div class="composer-bottom">
+                <span id="composer-hint">Enter to send · Shift + Enter for a new line</span>
+                <span class="message-count" id="message-count">0 / 2000</span>
+                <button class="primary-button" id="send-message" type="submit" disabled><span id="send-message-label">Send message</span><svg class="icon"><use href="#icon-arrow" /></svg></button>
+              </div>
+              <p class="form-error" id="message-error" role="alert" hidden></p>
+            </form>
           </article>
           <div class="workspace-bottom">
             <span>MAKE ROOM FOR WHAT MATTERS</span

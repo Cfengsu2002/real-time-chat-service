@@ -4,6 +4,17 @@ spring:
     username: sa
     password: ""
 app:
+  realtime:
+    transport: local
   jwt:
     secret: only-for-isolated-tests-not-a-production-key-123456
     ttl-seconds: 3600
+management:
+  health:
+    redis:
+      enabled: false
+  endpoint:
+    health:
+      group:
+        readiness:
+          include: readinessState,db

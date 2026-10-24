@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/ws").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/", "/index.html", "/app.css", "/app.js", "/favicon.svg", "/favicon.ico",
                                 "/assets/**", "/actuator/health", "/actuator/health/**", "/error").permitAll()

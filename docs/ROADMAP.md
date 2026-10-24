@@ -5,7 +5,7 @@ Dates use the America/New_York time zone. Each day's push contains that stage's 
 | Date | Stage | Status |
 | --- | --- | --- |
 | October 23, 2026 | Day 1: Accounts and rooms | Complete |
-| October 24, 2026 | Day 2: Messages and real-time delivery | Pending |
+| October 24, 2026 | Day 2: Messages and real-time delivery | Complete |
 | October 25, 2026 | Day 3: Deployment and end-to-end verification | Pending |
 
 ## Day 1 — October 23: Accounts and rooms
@@ -31,7 +31,7 @@ Dates use the America/New_York time zone. Each day's push contains that stage's 
 
 ## Day 2 — October 24: Messages and real-time delivery
 
-**Status: Pending**
+**Status: Complete** — 48 JUnit tests passed across the application. Real Redis and browser checks covered two-account live chat, history pagination, recovery of 105 missed messages, retry deduplication, literal-text rendering, and mobile sending. Actual Redis ticket checks verified Origin rejection, replay rejection, and concurrent single-use consumption.
 
 ### Deliverables
 
@@ -50,6 +50,14 @@ Dates use the America/New_York time zone. Each day's push contains that stage's 
 - Reused or expired connection tickets and cross-origin handshakes are rejected.
 - Reconnecting restores the current history page and leaves older messages accessible.
 - Automated tests pass before the day's push.
+
+### Verification
+
+- `./mvnw -B -q clean verify`: 48 tests, no failures, errors, or skips.
+- Real HTTP/WebSocket JUnit tests exercise committed-message delivery, replay rejection, Origin checks, and authentication expiry. Redis adapter unit tests use test doubles.
+- Separate local checks used Redis 8.6.3 with H2, a packaged application, and Chromium. Both browser accounts received live socket events; reconnect recovery traversed multiple history pages without duplicate IDs.
+- A frontend regression check used a controlled API to test a delayed history snapshot racing with a newer live event and a lost response after a stored send.
+- PostgreSQL with two application instances, containers, and deployment configuration remain in Day 3's scope.
 
 ## Day 3 — October 25: Deployment and end-to-end verification
 

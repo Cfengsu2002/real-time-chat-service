@@ -3,3 +3,15 @@ spring:
     url: jdbc:h2:mem:relay_day1_demo;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     username: sa
     password: ""
+app:
+  realtime:
+    transport: local
+management:
+  health:
+    redis:
+      enabled: false
+  endpoint:
+    health:
+      group:
+        readiness:
+          include: readinessState,db

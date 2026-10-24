@@ -11,6 +11,13 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      connect-timeout: 2s
+      timeout: 2s
   jackson:
     deserialization:
       fail-on-unknown-properties: true
@@ -31,9 +38,12 @@ management:
         enabled: true
       group:
         readiness:
-          include: readinessState,db
+          include: readinessState,db,redis
       show-details: never
 app:
+  realtime:
+    transport: ${REALTIME_TRANSPORT:redis}
+    allowed-origins: ${APP_ALLOWED_ORIGINS:http://localhost:8080,http://127.0.0.1:8080}
   jwt:
     secret: ${JWT_SECRET:}
     ttl-seconds: ${JWT_TTL_SECONDS:86400}
