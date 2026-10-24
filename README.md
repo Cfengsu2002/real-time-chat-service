@@ -107,5 +107,3 @@ Rooms are public to all signed-in users. Private messaging, attachments, read re
 Redis Pub/Sub does not retain missed events. PostgreSQL stores message history, but there is no transactional outbox: a failure between commit and publication can delay delivery until history is fetched.
 
 The [Kubernetes manifests](deploy/k8s) provide examples for two application replicas, a Service, health probes, and an HPA. They have not been deployed to a real cluster as part of the recorded validation. The sample PostgreSQL and Redis services are single replicas.
-
-Capacity, latency, query-speed improvements, and uptime targets have not been benchmarked. Functional tests do not establish production performance or availability.

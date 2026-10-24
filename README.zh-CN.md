@@ -6,8 +6,6 @@
 
 使用 Java 17、Spring Boot、原生 WebSocket、Redis Pub/Sub 和 PostgreSQL 的可运行聊天 MVP。内置同源网页界面、JWT 登录、公开房间、历史消息和断线重连，可用 Docker Compose 一次启动。
 
-> 参考图片中的 500+ 并发用户、低于 100ms 延迟、50K+ 消息、查询提速 60%、99.7% 可用性是待验证目标。本仓库没有声称这些数字已经达成；功能测试通过也不能证明容量、延迟或长期可用性。
-
 ## 快速体验
 
 需要 Java 17 和 OpenSSL。首次运行 Maven Wrapper 会下载 Maven 和项目依赖。
