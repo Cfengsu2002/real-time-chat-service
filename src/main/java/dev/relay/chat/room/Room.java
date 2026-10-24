@@ -1,4 +1,4 @@
-package dev.relay.chat.chat;
+package dev.relay.chat.room;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,12 +11,16 @@ import java.time.Instant;
 @Entity
 @Table(name = "rooms")
 public class Room {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, unique = true, length = 48)
     private String name;
+
     @Column(nullable = false, length = 160)
     private String description;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 

@@ -29,19 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
-        if (authorization != null) {
+        if (authorization != null && authorization.startsWith("Bearer ")) {
             try {
-                if (!authorization.startsWith("Bearer ") || authorization.length() > 4096) {
-                    throw new ApiException(org.springframework.http.HttpStatus.UNAUTHORIZED, "invalid_token", "Use Bearer authentication");
-                }
                 ChatPrincipal principal = jwt.verify(authorization.substring(7));
                 SecurityContextHolder.getContext().setAuthentication(
-                        new UsernamePasswordAuthenticationToken(principal, null, List.of()));
-            } catch (ApiException ex) {
+                        UsernamePasswordAuthenticationToken.authenticated(principal, null, List.of()));
+            } catch (ApiException exception) {
                 SecurityContextHolder.clearContext();
-                response.setStatus(401);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                json.writeValue(response.getOutputStream(), ApiResponse.error(ex.code(), ex.getMessage()));
+                json.writeValue(response.getOutputStream(), ApiResponse.error(exception.code(), exception.getMessage()));
                 return;
             }
         }

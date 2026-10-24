@@ -1,21 +1,21 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#162b2b" />
+    <meta name="theme-color" content="#19332e" />
     <meta
       name="description"
-      content="Relay Chat，让对话即刻发生。一个支持实时消息、公共房间与消息历史的轻量聊天空间。"
+      content="Relay is a simple workspace for creating public rooms and bringing your ideas together."
     />
-    <title>Relay Chat · 让对话即刻发生</title>
+    <title>Relay · Make room for your ideas</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/app.css" />
     <script src="/app.js" defer></script>
   </head>
   <body>
     <svg
-      class="icon-defs"
+      class="icon-library"
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -25,162 +25,197 @@
       <symbol id="icon-arrow" viewBox="0 0 24 24">
         <path d="M5 12h14m-6-6 6 6-6 6" />
       </symbol>
-      <symbol id="icon-send" viewBox="0 0 24 24">
-        <path d="m21 3-7 18-4-7-7-4L21 3ZM10 14l5-5" />
-      </symbol>
-      <symbol id="icon-exit" viewBox="0 0 24 24">
-        <path d="M10 5H5v14h5m5-14 7 7-7 7m-7-7h14" />
-      </symbol>
       <symbol id="icon-close" viewBox="0 0 24 24">
         <path d="m6 6 12 12M6 18 18 6" />
       </symbol>
       <symbol id="icon-menu" viewBox="0 0 24 24">
         <path d="M4 6h16M4 12h16M4 18h16" />
       </symbol>
-      <symbol id="icon-chat" viewBox="0 0 24 24">
-        <path
-          d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5a9.5 9.5 0 0 1 19 0Z"
-        />
-        <path d="M7 11h10M7 15h6" />
+      <symbol id="icon-exit" viewBox="0 0 24 24">
+        <path d="M10 5H5v14h5m5-14 7 7-7 7m-7-7h14" />
       </symbol>
-      <symbol id="icon-shield" viewBox="0 0 24 24">
-        <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
-        <path d="m8 12 3 3 5-6" />
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path d="M20 7v5h-5M4 17v-5h5" />
+        <path d="M6.2 7a7 7 0 0 1 11.4-1L20 9M4 15l2.4 3A7 7 0 0 0 17.8 17" />
+      </symbol>
+      <symbol id="icon-rooms" viewBox="0 0 24 24">
+        <rect x="4" y="4" width="6" height="6" rx="1.5" />
+        <rect x="14" y="4" width="6" height="6" rx="1.5" />
+        <rect x="4" y="14" width="6" height="6" rx="1.5" />
+        <rect x="14" y="14" width="6" height="6" rx="1.5" />
+      </symbol>
+      <symbol id="icon-globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3a17 17 0 0 1 0 18 17 17 0 0 1 0-18Z" />
       </symbol>
     </svg>
 
     <div class="app-shell">
-      <aside class="sidebar" id="sidebar" aria-label="工作空间导航">
-        <a class="brand" href="/" aria-label="Relay Chat 首页"
-          ><span class="brand-mark" aria-hidden="true">r<span>↗</span></span
-          ><span
+      <aside class="sidebar" id="sidebar" aria-label="Workspace navigation">
+        <a class="brand" href="/" aria-label="Relay home">
+          <span class="brand-mark" aria-hidden="true">r<span>↗</span></span>
+          <span
             >relay<span class="brand-dot">.</span
-            ><small>CHAT WORKSPACE</small></span
-          ></a
-        >
+            ><small>ROOM WORKSPACE</small></span
+          >
+        </a>
         <button
           class="icon-button sidebar-close"
           id="close-sidebar"
           type="button"
-          aria-label="关闭导航"
-          ><svg class="icon"><use href="#icon-close" /></svg
-        ></button>
+          aria-label="Close navigation"
+        >
+          <svg class="icon"><use href="#icon-close" /></svg>
+        </button>
 
-        <div class="workspace-label"
-          ><span class="workspace-symbol">R</span
-          ><div>公共工作空间<small>给每段对话一个空间</small></div
-          ><span class="workspace-chevron" aria-hidden="true">⌄</span></div
-        >
-        <div class="channel-heading"
-          ><h2>对话房间</h2
-          ><button
-            class="icon-button"
-            id="new-room"
-            type="button"
-            aria-label="创建公共房间"
-            disabled
-            ><svg class="icon"><use href="#icon-plus" /></svg></button
-        ></div>
-        <nav class="room-list" id="room-list" aria-label="公共房间列表"
-          ><div class="sidebar-placeholder">登录后，加入一段对话。</div></nav
-        >
-        <div class="sidebar-note"
-          ><span class="note-spark" aria-hidden="true">✳</span
-          ><p>好的想法，<br />从一句「你好」开始。</p
-          ><span>CONNECTED BY CONVERSATION</span></div
-        >
-        <div class="account" id="account"
-          ><div
-            class="avatar account-avatar"
-            id="account-avatar"
-            aria-hidden="true"
-            >R</div
-          ><div class="account-info"
-            ><strong id="account-name">欢迎来到 Relay</strong
-            ><small id="account-detail">你的下一段对话，在这里。</small></div
-          ><button
+        <div class="workspace-card">
+          <span class="workspace-avatar" aria-hidden="true">R</span>
+          <div>
+            Public workspace<small>A little space for your ideas.</small>
+          </div>
+          <span class="workspace-chevron" aria-hidden="true">⌄</span>
+        </div>
+        <div class="rooms-heading">
+          <h2>YOUR ROOMS</h2>
+          <div class="rooms-actions">
+            <button
+              class="icon-button"
+              id="refresh-rooms"
+              type="button"
+              aria-label="Refresh rooms"
+              disabled
+            >
+              <svg class="icon"><use href="#icon-refresh" /></svg></button
+            ><button
+              class="icon-button"
+              id="new-room"
+              type="button"
+              aria-label="Create a public room"
+              disabled
+            >
+              <svg class="icon"><use href="#icon-plus" /></svg>
+            </button>
+          </div>
+        </div>
+        <nav class="room-list" id="room-list" aria-label="Public rooms">
+          <p class="sidebar-placeholder">Sign in to explore the workspace.</p>
+        </nav>
+
+        <div class="sidebar-note">
+          <span aria-hidden="true">✳</span>
+          <p>Good things start<br />with a little space.</p>
+          <small>MAKE ROOM FOR WHAT MATTERS</small>
+        </div>
+        <div class="account">
+          <div class="account-avatar" id="account-avatar" aria-hidden="true">
+            R
+          </div>
+          <div class="account-info">
+            <strong id="account-name">Welcome to Relay</strong
+            ><small id="account-detail">Your next idea belongs here.</small>
+          </div>
+          <button
             class="icon-button"
             id="logout"
             type="button"
-            aria-label="退出登录"
+            aria-label="Sign out"
             hidden
-            ><svg class="icon"><use href="#icon-exit" /></svg></button
-        ></div>
+          >
+            <svg class="icon"><use href="#icon-exit" /></svg>
+          </button>
+        </div>
       </aside>
       <button
         class="sidebar-overlay"
         id="sidebar-overlay"
         type="button"
-        aria-label="关闭导航"
+        aria-label="Close navigation"
         hidden
       ></button>
 
-      <main class="main">
-        <header class="topbar"
-          ><div class="topbar-left"
-            ><button
+      <main class="main" id="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button
               class="icon-button menu-button"
               id="open-sidebar"
               type="button"
-              aria-label="打开房间导航"
-              aria-expanded="false"
+              aria-label="Open room navigation"
               aria-controls="sidebar"
-              ><svg class="icon"><use href="#icon-menu" /></svg></button
-            ><div class="breadcrumb"
-              ><span>工作空间</span><span aria-hidden="true">/</span
-              ><strong id="breadcrumb-room">欢迎</strong></div
-            ></div
-          ><span class="connection-status" id="connection-status" role="status"
-            ><span class="status-dot"></span
-            ><span id="connection-label">等待连接</span></span
-          ></header
-        >
+              aria-expanded="false"
+            >
+              <svg class="icon"><use href="#icon-menu" /></svg>
+            </button>
+            <div class="breadcrumb">
+              <span>Workspace</span><span aria-hidden="true">/</span
+              ><strong id="breadcrumb-room">Welcome</strong>
+            </div>
+          </div>
+          <span class="workspace-status"
+            ><span aria-hidden="true"></span>Public workspace</span
+          >
+        </header>
 
         <section
           class="welcome-view"
           id="welcome-view"
           aria-labelledby="welcome-title"
         >
-          <div class="welcome-intro"
-            ><div class="eyebrow"
-              ><span></span> A LITTLE CLOSER, IN REAL TIME</div
-            ><h1 id="welcome-title"
-              >让对话，<br />即刻<span class="accent-word">发生。</span></h1
-            ><p class="welcome-copy"
-              >一个轻盈、专注的聊天空间。<br />分享灵感，连接彼此，让每个想法都有回应。</p
-            ><div class="intro-features"
-              ><div
-                ><svg class="icon"><use href="#icon-chat" /></svg
-                ><span>实时对话<small>消息即刻送达</small></span></div
-              ><div
-                ><svg class="icon"><use href="#icon-shield" /></svg
-                ><span>安心连接<small>登录后开启交流</small></span></div
-              ></div
-            ><div class="intro-art" aria-hidden="true"
-              ><div class="art-orbit orbit-one"></div
-              ><div class="art-orbit orbit-two"></div
-              ><div class="art-circle"
-                ><span>hello<span class="art-dot">.</span></span
-                ><i></i></div
-              ><span class="art-star star-one">✳</span
+          <div class="welcome-intro">
+            <div class="eyebrow">
+              <span aria-hidden="true"></span> ROOM FOR SOMETHING GOOD
+            </div>
+            <h1 id="welcome-title">
+              Make room <br />for your <span>ideas.</span>
+            </h1>
+            <p class="welcome-copy">
+              A simple place to bring things together. <br />Find a room, set
+              the context, and make it yours.
+            </p>
+            <div class="intro-features">
+              <div>
+                <svg class="icon"><use href="#icon-rooms" /></svg
+                ><span
+                  >A space for every idea<small
+                    >Create and explore public rooms.</small
+                  ></span
+                >
+              </div>
+              <div>
+                <svg class="icon"><use href="#icon-globe" /></svg
+                ><span
+                  >A shared starting point<small
+                    >One workspace, open to every member.</small
+                  ></span
+                >
+              </div>
+            </div>
+            <div class="intro-art" aria-hidden="true">
+              <div class="art-orbit orbit-one"></div>
+              <div class="art-orbit orbit-two"></div>
+              <div class="art-circle">hello<span>.</span></div>
+              <span class="art-star star-one">✳</span
               ><span class="art-star star-two">✦</span
-              ><div class="art-label">GOOD CONVERSATIONS START HERE</div></div
-            ></div
-          >
-          <div class="auth-card"
-            ><div class="auth-card-heading"
-              ><span class="card-kicker">YOUR SPACE TO CONNECT</span
-              ><h2 id="auth-title">欢迎回来</h2
-              ><p id="auth-subtitle">登录账号，接着聊聊。</p></div
-            ><div class="auth-tabs" role="tablist" aria-label="账号操作"
-              ><button
-                id="login-tab"
+              ><small>EVERY IDEA STARTS SOMEWHERE</small>
+            </div>
+          </div>
+
+          <div class="auth-card">
+            <div class="auth-heading">
+              <span class="card-kicker">YOUR SPACE TO BEGIN</span>
+              <h2 id="auth-title">Welcome back.</h2>
+              <p id="auth-subtitle">Sign in and find your place.</p>
+            </div>
+            <div class="auth-tabs" role="tablist" aria-label="Account access">
+              <button
                 class="active"
+                id="login-tab"
                 type="button"
                 role="tab"
                 aria-selected="true"
                 aria-controls="auth-form"
-                >登录</button
+              >
+                Sign in</button
               ><button
                 id="register-tab"
                 type="button"
@@ -188,189 +223,210 @@
                 aria-selected="false"
                 aria-controls="auth-form"
                 tabindex="-1"
-                >创建账号</button
-              ></div
-            ><form id="auth-form" role="tabpanel" aria-labelledby="login-tab"
-              ><label for="username">用户名</label
+              >
+                Create account
+              </button>
+            </div>
+            <form id="auth-form" role="tabpanel" aria-labelledby="login-tab">
+              <label for="username">Username</label
               ><input
                 id="username"
                 name="username"
                 type="text"
                 autocomplete="username"
+                autocapitalize="none"
+                spellcheck="false"
                 minlength="3"
                 maxlength="24"
-                pattern="[A-Za-z0-9_]+"
-                placeholder="你的用户名"
-                required
+                pattern="[A-Za-z0-9_]{3,24}"
+                placeholder="Your username"
                 aria-describedby="username-hint"
+                required
               /><small class="field-hint" id="username-hint"
-                >3–24 位字母、数字或下划线，不区分大小写</small
-              ><label for="password">密码</label
-              ><div class="password-field"
-                ><input
+                >3–24 letters, numbers, or underscores.</small
+              ><label for="password">Password</label>
+              <div class="password-field">
+                <input
                   id="password"
                   name="password"
                   type="password"
                   autocomplete="current-password"
                   minlength="8"
                   maxlength="72"
-                  placeholder="至少 8 位字符"
+                  placeholder="At least 8 characters"
                   required
-                  aria-describedby="password-hint"
                 /><button
                   id="toggle-password"
                   type="button"
-                  aria-label="显示密码"
+                  aria-label="Show password"
                   aria-pressed="false"
-                  >显示</button
-                ></div
-              ><small class="password-hint" id="password-hint"
-                >最长 72 字节；中文等字符会占用多个字节。</small
-              ><p class="form-error" id="auth-error" role="alert" hidden></p
-              ><button
+                >
+                  Show
+                </button>
+              </div>
+              <p class="form-error" id="auth-error" role="alert" hidden></p>
+              <button
                 class="primary-button auth-submit"
                 id="auth-submit"
                 type="submit"
-                ><span>登录工作空间</span
-                ><svg class="icon"><use href="#icon-arrow" /></svg></button
-              ><p class="auth-footnote"
-                >无需邮箱，一个名字就能开始。<br />公共房间中的消息对所有登录用户可见。</p
-              ></form
-            ></div
-          >
-          <footer class="welcome-footer"
-            ><span>RELAY CHAT</span><span>少一点距离，多一点交流。</span
-            ><span>MADE FOR THE MOMENT ↗</span></footer
-          >
+              >
+                <span id="auth-submit-label">Sign in to Relay</span
+                ><svg class="icon"><use href="#icon-arrow" /></svg>
+              </button>
+              <p class="auth-footnote">
+                No email needed. Start with a name.<br />Public rooms are
+                visible to all signed-in members.
+              </p>
+            </form>
+          </div>
+          <footer class="welcome-footer">
+            <span>RELAY WORKSPACE</span
+            ><span>Simple spaces. Clear context.</span
+            ><span>START SOMETHING GOOD ↗</span>
+          </footer>
         </section>
 
-        <section class="chat-view" id="chat-view" aria-label="聊天空间" hidden>
-          <div class="room-header"
-            ><div class="room-header-icon" aria-hidden="true">#</div
-            ><div
-              ><h1 id="room-title">选择一个房间</h1
-              ><p id="room-description">加入公共房间，开启新的对话。</p></div
-            ><span class="public-badge">公共房间</span></div
-          >
-          <div class="chat-banner" id="chat-banner" role="status" hidden></div>
+        <section
+          class="workspace-view"
+          id="workspace-view"
+          aria-label="Room workspace"
+          hidden
+        >
+          <div class="workspace-heading">
+            <div>
+              <span class="eyebrow">A PLACE FOR YOUR NEXT IDEA</span>
+              <h1>Your room to begin.</h1>
+              <p>Explore the workspace or create a space of your own.</p>
+            </div>
+            <span class="room-count" id="room-count">0 rooms</span>
+          </div>
           <div
-            class="message-scroll"
-            id="message-scroll"
-            tabindex="0"
-            aria-label="聊天消息"
-            ><div class="history-control"
-              ><button class="text-button" id="load-more" type="button" hidden
-                >加载更早的消息</button
-              ></div
-            ><div
-              id="message-list"
-              role="log"
-              aria-live="polite"
-              aria-relevant="additions text"
-              aria-label="消息记录"
-            ></div
-            ><div class="chat-empty" id="chat-empty"
-              ><div class="empty-illustration" aria-hidden="true"
-                ><svg class="icon"><use href="#icon-chat" /></svg
-                ><span>✦</span></div
-              ><span class="card-kicker">A NEW CONVERSATION</span
-              ><h2 id="empty-title">这里，等你开口。</h2
-              ><p id="empty-description"
-                >从左侧选择一个房间，<br />或者创建一个属于新想法的空间。</p
-              ><button
-                class="secondary-button"
-                id="empty-create-room"
-                type="button"
-                ><svg class="icon"><use href="#icon-plus" /></svg
-                >创建公共房间</button
-              ><button
-                class="secondary-button"
-                id="retry-history"
-                type="button"
-                hidden
-                >重新加载消息</button
-              ></div
-            ></div
+            class="workspace-notice"
+            id="workspace-notice"
+            role="status"
+            hidden
           >
-          <div class="composer-area"
-            ><div class="new-messages-wrap"
-              ><button
-                class="new-messages"
-                id="new-messages"
-                type="button"
-                hidden
-                >有新消息 ↓</button
-              ></div
-            ><form class="composer" id="message-form"
-              ><label class="sr-only" for="message-input">消息内容</label
-              ><textarea
-                id="message-input"
-                rows="1"
-                maxlength="2000"
-                placeholder="选择一个房间，开始聊天…"
-                disabled
-                aria-describedby="composer-hint"
-              ></textarea
-              ><button
-                class="send-button"
-                id="send-message"
-                type="submit"
-                aria-label="发送消息"
-                disabled
-                ><svg class="icon">
-                  <use href="#icon-send" /></svg></button></form
-            ><div class="composer-footer"
-              ><span id="composer-hint"
-                ><kbd>Enter</kbd> 发送 · <kbd>Shift + Enter</kbd> 换行</span
-              ><span id="character-count">0 / 2000</span></div
-            ></div
+            <span id="workspace-notice-text"></span
+            ><button class="text-button" id="retry-rooms" type="button">
+              Try again
+            </button>
+          </div>
+
+          <div class="empty-state" id="empty-state">
+            <div class="empty-symbol" aria-hidden="true">
+              <svg class="icon"><use href="#icon-rooms" /></svg><span>✦</span>
+            </div>
+            <span class="card-kicker">START WITH A LITTLE SPACE</span>
+            <h2 id="empty-title">Looking for your next room.</h2>
+            <p id="empty-description">Your workspace is loading.</p>
+            <button
+              class="secondary-button"
+              id="empty-create-room"
+              type="button"
+              hidden
+            >
+              <svg class="icon"><use href="#icon-plus" /></svg>Create a public
+              room
+            </button>
+          </div>
+
+          <article
+            class="room-detail"
+            id="room-detail"
+            aria-labelledby="room-title"
+            hidden
           >
+            <div class="room-detail-top">
+              <div class="room-detail-icon" aria-hidden="true">#</div>
+              <span class="public-badge"
+                ><svg class="icon"><use href="#icon-globe" /></svg>Public
+                room</span
+              >
+            </div>
+            <span class="card-kicker">YOU'RE IN THE RIGHT PLACE</span>
+            <h2 id="room-title"></h2>
+            <p class="room-description" id="room-description"></p>
+            <div class="room-details-grid">
+              <div>
+                <span class="detail-label">ROOM NAME</span
+                ><strong id="room-name-value"></strong>
+              </div>
+              <div>
+                <span class="detail-label">CREATED</span
+                ><time id="room-created"></time>
+              </div>
+              <div>
+                <span class="detail-label">VISIBILITY</span
+                ><strong>All workspace members</strong>
+              </div>
+            </div>
+            <div class="room-note">
+              <span aria-hidden="true">✳</span>
+              <p>
+                A clear name. A little context.<br />A shared place to start.
+              </p>
+            </div>
+          </article>
+          <div class="workspace-bottom">
+            <span>MAKE ROOM FOR WHAT MATTERS</span
+            ><button class="text-button" id="another-room" type="button">
+              Create another room <span aria-hidden="true">↗</span>
+            </button>
+          </div>
         </section>
       </main>
     </div>
 
-    <dialog class="room-dialog" id="room-dialog" aria-labelledby="dialog-title"
-      ><div class="dialog-heading"
-        ><span class="card-kicker">MAKE ROOM FOR SOMETHING NEW</span
+    <dialog class="room-dialog" id="room-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-heading">
+        <span class="card-kicker">MAKE ROOM FOR SOMETHING NEW</span
         ><button
           class="icon-button"
           id="close-dialog"
           type="button"
-          aria-label="关闭创建房间"
-          ><svg class="icon"><use href="#icon-close" /></svg></button></div
-      ><h2 id="dialog-title">新对话，新空间。</h2
-      ><p>创建公共房间，邀请想法在这里碰面。</p
-      ><form id="room-form"
-        ><label for="room-name">房间名称</label
+          aria-label="Close create room dialog"
+        >
+          <svg class="icon"><use href="#icon-close" /></svg>
+        </button>
+      </div>
+      <h2 id="dialog-title">A new idea needs a name.</h2>
+      <p>Create a public room for your next project, topic, or interest.</p>
+      <form id="room-form">
+        <label for="room-name">Room name</label
         ><input
           id="room-name"
           name="name"
+          type="text"
+          autocapitalize="none"
+          spellcheck="false"
           minlength="3"
           maxlength="48"
-          pattern="[a-z0-9-]+"
-          placeholder="例如：creative-corner"
+          pattern="[a-z0-9]+(-[a-z0-9]+)*"
+          placeholder="e.g. design-notes"
+          aria-describedby="room-name-hint"
           required
-          aria-describedby="room-name-hint" /><small
-          class="field-hint"
-          id="room-name-hint"
-          >3–48 位小写英文字母、数字或短横线</small
+        /><small class="field-hint" id="room-name-hint"
+          >3–48 lowercase letters, numbers, or single hyphens.</small
         ><label for="room-description-input"
-          >房间介绍 <span class="optional">选填</span></label
+          >Description <span class="optional">optional</span></label
         ><textarea
           id="room-description-input"
           name="description"
-          maxlength="160"
           rows="3"
-          placeholder="告诉大家，这里可以聊些什么。"
-        ></textarea
-        ><div class="dialog-info"
-          ><svg class="icon"><use href="#icon-shield" /></svg
-          ><span>这是一个公共房间，所有登录用户均可查看和参与。</span></div
-        ><p class="form-error" id="room-error" role="alert" hidden></p
-        ><button class="primary-button" id="create-room-submit" type="submit"
-          ><span>创建房间</span
-          ><svg class="icon"><use href="#icon-arrow" /></svg></button></form
-    ></dialog>
+          maxlength="160"
+          placeholder="A little context goes a long way."
+        ></textarea>
+        <div class="dialog-info">
+          <svg class="icon"><use href="#icon-globe" /></svg
+          ><span>Everyone in the workspace can discover this room.</span>
+        </div>
+        <p class="form-error" id="room-error" role="alert" hidden></p>
+        <button class="primary-button" id="create-room-submit" type="submit">
+          <span id="create-room-label">Create room</span
+          ><svg class="icon"><use href="#icon-arrow" /></svg>
+        </button>
+      </form>
+    </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
   </body>
 </html>

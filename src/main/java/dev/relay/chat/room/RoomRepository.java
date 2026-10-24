@@ -1,4 +1,4 @@
-package dev.relay.chat.chat;
+package dev.relay.chat.room;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

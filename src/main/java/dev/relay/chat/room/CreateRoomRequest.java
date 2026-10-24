@@ -1,4 +1,4 @@
-package dev.relay.chat.chat;
+package dev.relay.chat.room;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

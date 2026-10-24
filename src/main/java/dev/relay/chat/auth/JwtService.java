@@ -12,6 +12,7 @@ import dev.relay.chat.api.ApiException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -36,23 +37,33 @@ public class JwtService {
     }
 
     public TokenResult issue(UserAccount user) {
-        Instant now = Instant.now();
-        Instant expiresAt = now.plusSeconds(ttlSeconds).truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
-        JWTClaimsSet claims = new JWTClaimsSet.Builder().issuer(ISSUER).subject(user.getId().toString())
-                .claim("username", user.getUsername()).issueTime(Date.from(now)).expirationTime(Date.from(expiresAt)).build();
-        SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.HS256).type(JOSEObjectType.JWT).build(), claims);
+        Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        Instant expiresAt = issuedAt.plusSeconds(ttlSeconds);
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .issuer(ISSUER)
+                .subject(user.getId().toString())
+                .claim("username", user.getUsername())
+                .issueTime(Date.from(issuedAt))
+                .expirationTime(Date.from(expiresAt))
+                .build();
+        SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.HS256)
+                .type(JOSEObjectType.JWT).build(), claims);
         try {
             jwt.sign(new MACSigner(secret));
-        } catch (JOSEException ex) {
-            throw new IllegalStateException("Cannot sign authentication token", ex);
+        } catch (JOSEException exception) {
+            throw new IllegalStateException("Cannot sign authentication token", exception);
         }
         return new TokenResult(jwt.serialize(), UserView.from(user), expiresAt);
     }
 
     public ChatPrincipal verify(String token) {
+        if (token == null || token.isBlank()) {
+            throw invalid();
+        }
         try {
             SignedJWT jwt = SignedJWT.parse(token);
-            if (!JWSAlgorithm.HS256.equals(jwt.getHeader().getAlgorithm()) || !jwt.verify(new MACVerifier(secret))) {
+            if (!JWSAlgorithm.HS256.equals(jwt.getHeader().getAlgorithm())
+                    || !jwt.verify(new MACVerifier(secret))) {
                 throw invalid();
             }
             JWTClaimsSet claims = jwt.getJWTClaimsSet();
@@ -60,13 +71,13 @@ public class JwtService {
                     || !claims.getExpirationTime().toInstant().isAfter(Instant.now())) {
                 throw invalid();
             }
-            long id = Long.parseLong(claims.getSubject());
+            long userId = Long.parseLong(claims.getSubject());
             String username = claims.getStringClaim("username");
-            if (id <= 0 || username == null || !username.matches("[a-z0-9_]{3,24}")) {
+            if (userId < 1 || username == null || !username.matches("[a-z0-9_]{3,24}")) {
                 throw invalid();
             }
-            return new ChatPrincipal(id, username, claims.getExpirationTime().toInstant());
-        } catch (ParseException | JOSEException | NumberFormatException ex) {
+            return new ChatPrincipal(userId, username, claims.getExpirationTime().toInstant());
+        } catch (ParseException | JOSEException | NumberFormatException exception) {
             throw invalid();
         }
     }

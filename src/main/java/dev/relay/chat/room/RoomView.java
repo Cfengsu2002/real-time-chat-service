@@ -1,4 +1,4 @@
-package dev.relay.chat.chat;
+package dev.relay.chat.room;
 
 import java.time.Instant;
 

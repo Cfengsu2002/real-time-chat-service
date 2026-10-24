@@ -13,18 +13,18 @@ public class AuthService {
     private final UserRepository users;
     private final PasswordEncoder passwords;
     private final JwtService jwt;
-    private final String dummyHash;
+    private final String missingUserHash;
 
     public AuthService(UserRepository users, PasswordEncoder passwords, JwtService jwt) {
         this.users = users;
         this.passwords = passwords;
         this.jwt = jwt;
-        this.dummyHash = passwords.encode("nonexistent-user-timing-padding");
+        this.missingUserHash = passwords.encode("padding-for-nonexistent-user-checks");
     }
 
     @Transactional
     public JwtService.TokenResult register(CredentialsRequest request) {
-        validatePassword(request.password());
+        validatePasswordBytes(request.password());
         String username = request.username().toLowerCase(Locale.ROOT);
         if (users.findByUsername(username).isPresent()) {
             throw new ApiException(HttpStatus.CONFLICT, "username_taken", "This username is already taken");
@@ -35,21 +35,23 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public JwtService.TokenResult login(CredentialsRequest request) {
-        validatePassword(request.password());
+        validatePasswordBytes(request.password());
         UserAccount user = users.findByUsername(request.username().toLowerCase(Locale.ROOT)).orElse(null);
-        boolean matches = passwords.matches(request.password(), user == null ? dummyHash : user.getPasswordHash());
+        // 不存在的账号也执行 BCrypt，减少账号是否存在带来的耗时差异。
+        boolean matches = passwords.matches(request.password(), user == null ? missingUserHash : user.getPasswordHash());
         if (user == null || !matches) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "invalid_credentials", "Invalid username or password");
         }
         return jwt.issue(user);
     }
 
+    @Transactional(readOnly = true)
     public UserView me(ChatPrincipal principal) {
         return users.findById(principal.id()).map(UserView::from)
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "invalid_token", "User no longer exists"));
     }
 
-    private void validatePassword(String password) {
+    private void validatePasswordBytes(String password) {
         if (password.getBytes(StandardCharsets.UTF_8).length > 72) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "validation_failed", "Password must not exceed 72 UTF-8 bytes");
         }
