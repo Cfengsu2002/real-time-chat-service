@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the web interface against two running Relay application instances."""
+"""验证两个运行中的聊天服务实例及其网页界面。"""
 
 import argparse
 import json

@@ -84,7 +84,7 @@
         );
       }
       throw new ApiError(
-        "Could not reach Relay. Check your connection and try again.",
+        "Could not reach the chat service. Check your connection and try again.",
         0,
       );
     } finally {
@@ -119,7 +119,7 @@
         : "Signing you in…"
       : state.mode === "register"
         ? "Create your account"
-        : "Sign in to Relay";
+        : "Sign in to chat";
   }
 
   function setMode(mode, focus = false) {
@@ -256,7 +256,7 @@
     $("logout").hidden = true;
     $("new-room").disabled = true;
     $("refresh-rooms").disabled = true;
-    $("account-name").textContent = "Welcome to Relay";
+    $("account-name").textContent = "Welcome to chat";
     $("account-avatar").textContent = "R";
     $("account-detail").textContent = "Your next idea belongs here.";
     $("breadcrumb-room").textContent = "Welcome";

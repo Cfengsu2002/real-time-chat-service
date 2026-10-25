@@ -1,9 +1,23 @@
-# Relay Chat
+# Real-Time Chat Service
 
-[![CI](https://github.com/Cfengsu2002/relay-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/Cfengsu2002/relay-chat/actions/workflows/ci.yml)
+[![CI](https://github.com/Cfengsu2002/real-time-chat-service/actions/workflows/ci.yml/badge.svg)](https://github.com/Cfengsu2002/real-time-chat-service/actions/workflows/ci.yml)
+
+**Say hello. Drop offline. Pick up where you left off.**
 
 A real-time chat application built with Java 17, Spring Boot, and PostgreSQL.
-## Features
+
+Public rooms, live conversations, and a way back when your connection has other plans.
+
+## The interesting parts
+
+| A small plot twist | What happens next |
+| --- | --- |
+| Two people connect to different app instances. | Redis Pub/Sub carries live messages between them. |
+| One browser goes offline. | A fresh connection and cursor-based history recover missed messages. |
+| A send succeeds, but its response disappears. | Retrying the same client message ID returns the saved message without creating a duplicate. |
+| The conversation gets longer. | Indexed PostgreSQL storage and cursor pagination keep older messages accessible. |
+
+## Under the hood
 
 - JWT authentication with BCrypt password hashing.
 - Public rooms with persistent messages and cursor-based history.
@@ -18,8 +32,8 @@ A real-time chat application built with Java 17, Spring Boot, and PostgreSQL.
 Requires Docker Compose and OpenSSL.
 
 ```bash
-git clone https://github.com/Cfengsu2002/relay-chat.git
-cd relay-chat
+git clone https://github.com/Cfengsu2002/real-time-chat-service.git
+cd real-time-chat-service
 umask 077
 printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' \
   "$(openssl rand -hex 48)" "$(openssl rand -hex 24)" > .env
@@ -35,6 +49,8 @@ docker compose --profile scale up -d --build --wait
 ```
 
 Open [localhost:18081](http://localhost:18081) in a separate browser profile and sign in with another account. Both instances share the same database, Redis server, and JWT secret.
+
+For a little live demo: take one browser offline, send a few messages from the other, then reconnect. The conversation should pick up where it left off.
 
 Stop the stack with `docker compose --profile scale down`. See [.env.example](.env.example) for port and origin configuration.
 
