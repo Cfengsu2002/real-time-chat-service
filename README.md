@@ -2,8 +2,7 @@
 
 [![CI](https://github.com/Cfengsu2002/relay-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/Cfengsu2002/relay-chat/actions/workflows/ci.yml)
 
-A real-time chat application built with Java 17, Spring Boot, native WebSocket, Redis Pub/Sub, and PostgreSQL.
-
+A real-time chat application built with Java 17, Spring Boot, and PostgreSQL.
 ## Features
 
 - JWT authentication with BCrypt password hashing.
