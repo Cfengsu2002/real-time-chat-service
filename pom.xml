@@ -11,7 +11,7 @@
     </parent>
     <groupId>dev.relay</groupId>
     <artifactId>relay-chat</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <name>Relay Chat</name>
     <description>Real-time public rooms with persistent messages</description>
     <properties>

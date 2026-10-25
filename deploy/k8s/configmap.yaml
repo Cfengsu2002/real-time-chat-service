@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: relay-config
+  namespace: relay-chat
+data:
+  DATABASE_URL: jdbc:postgresql://postgres:5432/relay_v2
+  DATABASE_USERNAME: relay
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REALTIME_TRANSPORT: redis
+  JWT_TTL_SECONDS: "86400"
+  APP_ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080,https://chat.example.com
+  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError

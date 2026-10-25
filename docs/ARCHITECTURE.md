@@ -34,3 +34,9 @@ The handshake checks an explicit Origin allowlist before consuming the ticket. O
 The JWT is kept in session storage. Each room maintains a message map, history cursors, a draft, and at most one unconfirmed send. A network failure retains the same client UUID for a retry. Message content is inserted using `textContent`.
 
 Switching rooms replaces the socket subscription. Requests check the current account and room before updating the visible conversation. Logout clears timers, the socket, drafts, and cached messages.
+
+## Deployment
+
+Compose runs PostgreSQL and Redis on an internal network, with one application instance by default and a second through the `scale` profile. Both instances use the same image, database, Redis server, and JWT secret. Database and Redis volumes are independent of application containers.
+
+The Java image runs as a non-root user. Application liveness is separate from readiness, which includes database and Redis availability. The Kubernetes examples apply the same shared-service layout with two app replicas, persistent claims, resource limits, and a CPU-based HPA.

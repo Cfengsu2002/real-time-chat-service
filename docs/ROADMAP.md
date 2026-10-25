@@ -6,7 +6,7 @@ Dates use the America/New_York time zone. Each day's push contains that stage's 
 | --- | --- | --- |
 | October 23, 2026 | Day 1: Accounts and rooms | Complete |
 | October 24, 2026 | Day 2: Messages and real-time delivery | Complete |
-| October 25, 2026 | Day 3: Deployment and end-to-end verification | Pending |
+| October 25, 2026 | Day 3: Deployment and end-to-end verification | Complete |
 
 ## Day 1 — October 23: Accounts and rooms
 
@@ -61,7 +61,7 @@ Dates use the America/New_York time zone. Each day's push contains that stage's 
 
 ## Day 3 — October 25: Deployment and end-to-end verification
 
-**Status: Pending**
+**Status: Complete** — The Java 17 container image builds and both application containers become healthy with PostgreSQL 16 and Redis 7. All 48 Java tests, the two-instance integration checks, and desktop/mobile browser acceptance checks passed. Nine rendered Kubernetes resources passed strict schema validation.
 
 ### Deliverables
 
@@ -81,3 +81,13 @@ Dates use the America/New_York time zone. Each day's push contains that stage's 
 - Browser checks cover registration, login, rooms, messages, reconnects, and mobile navigation.
 - CI completes successfully for the final stage.
 - Documentation distinguishes verified behavior from deployment examples that have only been checked statically.
+
+### Verification
+
+- The packaged application runs as a non-root user with a read-only root filesystem and bounded container memory.
+- A connection ticket issued by one container works on the other, and simultaneous consumption across both containers succeeds once.
+- A message sent through one container reaches an actual WebSocket subscribed on the other through Redis Pub/Sub.
+- PostgreSQL checks cover exact retry responses, concurrent retries, pagination, cursor recovery during concurrent writes, and a naturally expired connection ticket.
+- Restarting both application containers retained stored history, shared authentication, and the exact response to a retried message.
+- Chromium checks cover account and room flows, cross-instance delivery, stored history, 105 missed messages, a lost send response, mobile interaction, and sign-out.
+- Kubernetes manifests are rendered and schema-validated; a live cluster and autoscaling were not exercised.

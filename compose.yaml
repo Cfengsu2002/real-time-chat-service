@@ -1,0 +1,74 @@
+name: relay-chat-v2
+
+x-app: &app
+  image: ${RELAY_IMAGE:-relay-chat:1.0.0}
+  build: .
+  restart: unless-stopped
+  init: true
+  read_only: true
+  tmpfs:
+    - /tmp
+  mem_limit: 512m
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  environment:
+    DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-relay_v2}
+    DATABASE_USERNAME: ${POSTGRES_USER:-relay}
+    DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    REDIS_HOST: redis
+    REDIS_PORT: "6379"
+    REALTIME_TRANSPORT: redis
+    JWT_SECRET: ${JWT_SECRET:?Set a random JWT_SECRET in .env}
+    JWT_TTL_SECONDS: ${JWT_TTL_SECONDS:-86400}
+    APP_ALLOWED_ORIGINS: ${APP_ALLOWED_ORIGINS:-http://localhost:18080,http://127.0.0.1:18080,http://localhost:18081,http://127.0.0.1:18081}
+    JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-relay_v2}
+      POSTGRES_USER: ${POSTGRES_USER:-relay}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_v2_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: [redis-server, --appendonly, "yes"]
+    restart: unless-stopped
+    volumes:
+      - redis_v2_data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    <<: *app
+    ports:
+      - "127.0.0.1:${APP_PORT:-18080}:8080"
+
+  app2:
+    <<: *app
+    profiles: [scale]
+    ports:
+      - "127.0.0.1:${APP2_PORT:-18081}:8080"
+
+volumes:
+  postgres_v2_data:
+  redis_v2_data:

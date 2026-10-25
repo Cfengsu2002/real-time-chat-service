@@ -100,7 +100,7 @@ Requires the normal Bearer token. Returns a short-lived, single-use connection t
 {"ticket":"<opaque-ticket>","expiresAt":"2026-10-24T14:00:30Z"}
 ```
 
-Connect to `ws://localhost:8080/ws?ticket=<ticket>` (use `wss://` with HTTPS). The handshake requires an allowed `Origin` header. Missing, expired, or reused tickets are rejected. A ticket cannot outlive its JWT, and an open socket closes when that JWT expires. Obtain a fresh ticket for every connection attempt; never put the JWT in the WebSocket URL.
+Connect to `/ws?ticket=<ticket>` on the application's origin, for example `ws://localhost:18080/ws?ticket=<ticket>` with Compose or port `8080` in the local demo. Use `wss://` with HTTPS. The handshake requires an allowed `Origin` header. Missing, expired, or reused tickets are rejected. A ticket cannot outlive its JWT, and an open socket closes when that JWT expires. Obtain a fresh ticket for every connection attempt; never put the JWT in the WebSocket URL.
 
 ### Subscribe and receive
 
